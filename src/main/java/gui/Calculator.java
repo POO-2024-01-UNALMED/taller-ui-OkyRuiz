@@ -205,6 +205,4 @@ public class Calculator extends VBox implements EventHandler<ActionEvent>{
 	    }
 		
 	}
-	
-
 }
