@@ -19,9 +19,14 @@ public class Calculator extends VBox implements EventHandler<ActionEvent>{
 	String operator;
 	Text displayText;
 	
+	public void setText(String p) {
+		this.displayText.setText(p);
+	}
+	
 	public Calculator(){
 		super(10);
 		this.displayText = new Text();
+
 		
 		Rectangle rt = new Rectangle(250, 50, Color.TRANSPARENT);
 		
@@ -128,41 +133,76 @@ public class Calculator extends VBox implements EventHandler<ActionEvent>{
 		Button b = (Button) event.getSource();
 		String value = b.getText();
 		
-		if (value.equals("0")|value.equals("1")|value.equals("2")|
-				value.equals("3")|value.equals("4")|value.equals("5")|
-				value.equals("6")|value.equals("7")|value.equals("8")|value.equals("9")) {
-			if(operator==null) {
-				number1=number1+value;
-				displayText.setText(number1);
-			}else{number2=number2+value; 
-			displayText.setText(number1+operator+number2);}
-		}
-		else if(value.equals("+")|value.equals("-")|value.equals("*")|value.equals("/")) {
-			operator=value;
-			displayText.setText(number1+operator);
-		}
-		else if(value.equals("=")) {
-			switch (operator) {
-			case "+":
-				displayText.setText(String.valueOf(Double.parseDouble(number1)+Double.parseDouble(number2)));
-				break;
-			case "-":
-				displayText.setText(String.valueOf(Double.parseDouble(number1)-Double.parseDouble(number2)));
-				break;
-			case "*":
-				displayText.setText(String.valueOf(Double.parseDouble(number1)*Double.parseDouble(number2)));
-				break;
-			case "/":
-				displayText.setText(String.valueOf(Double.parseDouble(number1)/Double.parseDouble(number2)));
-				break;
-			}
-		}
-		else if (value.equals("C")) {
-			displayText.setText("");
-			number1 = "";
-			number2 = "";
-			operator= null;
-		}
+		System.out.println(displayText.getText());
+		
+		if(displayText.getText()=="Error") {
+        	number1 ="";
+        	number2 = "";
+            operator = "";
+        }
+		
+		if ("0123456789".contains(value)) {
+	        if (operator =="") {
+	            number1 += value;
+	            setText(number1+operator+number2); 
+	        } else {
+	            number2 += value;
+	            setText(number1+operator+number2); 
+	        }
+	    } 
+	    else if ("+-*/".contains(value)) {
+	    	if(number1!="") {
+	        operator = value;
+	        setText(number1+operator+number2);
+	    	}
+	    } 
+	    else if ("=".equals(value)) {
+	        if (!number1.isEmpty() && !number2.isEmpty()) {
+	            double num1 = Double.parseDouble(number1);
+	            double num2 = Double.parseDouble(number2);
+	            double result = 0;
+
+	            switch (operator) {
+	                case "+":
+	                    result = num1 + num2;
+	                    break;
+	                case "-":
+	                    result = num1 - num2;
+	                    break;
+	                case "*":
+	                    result = num1 * num2;
+	                    break;
+	                case "/":
+	                    if (num2 != 0) {
+	                        result = num1 / num2;
+	                    } else {
+	                        setText("Error"); 
+	                        return;
+	                    }
+	                    break;
+	            }
+	            int resulta=0;
+	            if (result == Math.floor(result)) {
+	                resulta=(int) result;
+	                setText(String.valueOf(resulta));
+	                number1 = String.valueOf(resulta);
+	            }
+	            else {
+	            	setText(String.valueOf(result));
+	            	number1 = String.valueOf(result);
+	            }
+	            
+	            number2 = "";
+	            operator = "";
+	        }
+	    } 
+	
+	    else if ("C".equals(value)) {
+	        number1 = "";
+	        number2 = "";
+	        operator = "";
+	        setText(""); 
+	    }
 		
 	}
 	
