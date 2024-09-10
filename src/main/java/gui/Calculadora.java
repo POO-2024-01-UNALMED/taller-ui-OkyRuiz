@@ -7,10 +7,7 @@ import javafx.stage.Stage;
 
 public class Calculadora extends Application  {
 	
-	public static void main(String args[]){ 
-	      launch(args); 
-	} 
-	
+
 	@Override
 	public void start(Stage window) throws Exception {
 		VBox vb = new VBox();
@@ -20,6 +17,10 @@ public class Calculadora extends Application  {
 		Scene sc = new Scene(vb, 270, 270);
 		window.setScene(sc);
 		window.show();
+	}
+	
+	public static void main(String args[]){ 
+	      launch(args); 
 	}
 	
 }

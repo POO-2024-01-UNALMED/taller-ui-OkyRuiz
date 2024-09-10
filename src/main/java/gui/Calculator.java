@@ -126,83 +126,94 @@ public class Calculator extends VBox implements EventHandler<ActionEvent>{
 		
 		this.getChildren().addAll(sp, gd);
 	}
-
+	
 	@Override
 	public void handle(ActionEvent event) {
-		
-		Button b = (Button) event.getSource();
-		String value = b.getText();
-		
-		System.out.println(displayText.getText());
-		
-		if(displayText.getText()=="Error") {
-        	number1 ="";
-        	number2 = "";
-            operator = "";
-        }
-		
-		if ("0123456789".contains(value)) {
-	        if (operator =="") {
+	    Button b = (Button) event.getSource();
+	    String value = b.getText();
+	    
+
+	    //RESETEA LA CALCULADORA SI HAY UN ERROR MOSTRADO
+	    if (displayText.getText().equals("Error")) {
+	        number1 = "";
+	        number2 = "";
+	        operator = "";
+	        setText("");
+	        return;
+	    }
+	    
+	    //MANEJO DE ENTRADA DE NÚMEROS
+	    if ("0123456789".contains(value)) {
+	        if (operator == null || operator.isEmpty()) {
 	            number1 += value;
-	            setText(number1+operator+number2); 
+	            setText(number1); 
 	        } else {
 	            number2 += value;
-	            setText(number1+operator+number2); 
+	            setText(number1 + operator + number2); 
 	        }
 	    } 
+
+	    //MANEJO DE OPERADORES
 	    else if ("+-*/".contains(value)) {
-	    	if(number1!="") {
-	        operator = value;
-	        setText(number1+operator+number2);
-	    	}
+	        if (!number1.isEmpty() && (operator == null || operator.isEmpty())) {
+	            operator = value;
+	            setText(number1 + operator);
+	        }
 	    } 
+
+	    //MANEJO DE LA OPERACIÓN DE IGUAL
 	    else if ("=".equals(value)) {
 	        if (!number1.isEmpty() && !number2.isEmpty()) {
-	            double num1 = Double.parseDouble(number1);
-	            double num2 = Double.parseDouble(number2);
-	            double result = 0;
+	            try {
+	                double num1 = Double.parseDouble(number1);
+	                double num2 = Double.parseDouble(number2);
+	                double result = 0;
 
-	            switch (operator) {
-	                case "+":
-	                    result = num1 + num2;
-	                    break;
-	                case "-":
-	                    result = num1 - num2;
-	                    break;
-	                case "*":
-	                    result = num1 * num2;
-	                    break;
-	                case "/":
-	                    if (num2 != 0) {
+	                switch (operator) {
+	                    case "+":
+	                        result = num1 + num2;
+	                        break;
+	                    case "-":
+	                        result = num1 - num2;
+	                        break;
+	                    case "*":
+	                        result = num1 * num2;
+	                        break;
+	                    case "/":
+	                        if (num2 == 0) {
+	                            setText("Error"); 
+	                            return;
+	                        }
 	                        result = num1 / num2;
-	                    } else {
-	                        setText("Error"); 
-	                        return;
-	                    }
-	                    break;
+	                        break;
+	                }
+
+
+	                //MOSTAR RESULTADO EN FORMATO ENTERO SI NO TIENE DECIMALES
+	                if (result == (int) result) {
+	                    setText(String.valueOf((int) result));
+	                    number1 = String.valueOf((int) result);
+	                } else {
+	                    setText(String.valueOf(result));
+	                    number1 = String.valueOf(result);
+	                }
+
+	                //RESETEAR VALORES PARA UNA NUEVA OPERACIÓN
+	                number2 = "";
+	                operator = "";
+	            } catch (NumberFormatException e) {
+	                setText("Error");
 	            }
-	            int resulta=0;
-	            if (result == Math.floor(result)) {
-	                resulta=(int) result;
-	                setText(String.valueOf(resulta));
-	                number1 = String.valueOf(resulta);
-	            }
-	            else {
-	            	setText(String.valueOf(result));
-	            	number1 = String.valueOf(result);
-	            }
-	            
-	            number2 = "";
-	            operator = "";
 	        }
 	    } 
-	
+	    
+	    //MANEJO DE BOTÓN DE RESET
 	    else if ("C".equals(value)) {
 	        number1 = "";
 	        number2 = "";
 	        operator = "";
 	        setText(""); 
 	    }
-		
 	}
+
 }
